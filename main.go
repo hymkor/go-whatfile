@@ -49,13 +49,34 @@ func peSubsystem(pe *pefile.PE) string {
 	}
 }
 
+func imageCharacteristics(pe *pefile.PE) []string {
+	result := []string{}
+	ch := pe.FileHeader.Characteristics
+
+	if (ch & pefile.IMAGE_FILE_EXECUTABLE_IMAGE) != 0 {
+		result = append(result, "Executable Image")
+	}
+	if (ch & pefile.IMAGE_FILE_16BIT_MACHINE) != 0 {
+		result = append(result, "16bit")
+	}
+	if (ch & pefile.IMAGE_FILE_32BIT_MACHINE) != 0 {
+		result = append(result, "32bit")
+	}
+	if (ch & pefile.IMAGE_FILE_DLL) != 0 {
+		result = append(result, "DLL")
+	}
+	return result
+}
+
 var extensions = map[string]func(fname string, bin []byte) string{
 	"exe": func(fname string, bin []byte) string {
 		pe, err := pefile.Parse(bin)
 		if err != nil {
 			return ""
 		}
-		return peSubsystem(pe)
+		tags := []string{peSubsystem(pe)}
+		tags = append(tags, imageCharacteristics(pe)...)
+		return "<" + strings.Join(tags, "><") + ">"
 	},
 }
 
