@@ -76,6 +76,9 @@ var extensions = map[string]func(fname string, bin []byte) string{
 		}
 		tags := []string{peSubsystem(pe)}
 		tags = append(tags, imageCharacteristics(pe)...)
+		if pe.OptionalHeader64 != nil {
+			tags = append(tags, "64bit Header")
+		}
 		return "<" + strings.Join(tags, "><") + ">"
 	},
 }
