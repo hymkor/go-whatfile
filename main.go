@@ -6,8 +6,8 @@ import (
 	"os"
 	"strings"
 
-	"github.com/hillu/go-pefile"
-	"github.com/zetamatta/fleep-go" // "github.com/floyernick/fleep-go"
+	"github.com/H5eye/go-pefile"
+	"github.com/floyernick/fleep-go"
 )
 
 func peSubsystem(pe *pefile.PE) string {
