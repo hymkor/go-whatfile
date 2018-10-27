@@ -85,6 +85,7 @@ func eachFile(fname string) error {
 			return nil
 		}
 	}
+	fmt.Printf("%s: %s\n", fname, TryText(fname, bin))
 	return nil
 }
 
