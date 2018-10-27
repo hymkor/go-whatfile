@@ -74,5 +74,5 @@ func tryExe(fname string, bin []byte) string {
 	if pe.OptionalHeader64 != nil {
 		tags = append(tags, "64bit Header")
 	}
-	return "<" + strings.Join(tags, "><") + ">"
+	return strings.Join(tags, ", ")
 }
