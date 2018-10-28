@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"fmt"
+	"io"
 	"os"
 	"path/filepath"
 	"strings"
@@ -75,8 +76,12 @@ func eachFile(fname string) error {
 
 	bin := make([]byte, 1024)
 	n, err := fd.Read(bin)
+	if err == io.EOF {
+		fmt.Printf("%s: zero byte file\n", fname)
+		return nil
+	}
 	if err != nil {
-		println(err)
+		fmt.Fprintf(os.Stderr, "%s: %s\n", err)
 	}
 	bin = bin[:n]
 
