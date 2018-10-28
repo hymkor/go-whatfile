@@ -6,6 +6,7 @@ import (
 	"io"
 	"os"
 	"path/filepath"
+	"sort"
 	"strings"
 )
 
@@ -26,7 +27,7 @@ var jpeg = []*Feature{
 }
 
 var FeatureTable = map[string][]*Feature{
-	"exe": {{Magic: B("MZ"), Func: tryExe}},
+	"exe": {{Magic: B("MZ"), Func: tryExe, Desc: "Portable Executable"}},
 	"dwg": {
 		{Magic: B("AC1003"), Desc: "AutoCAD EX-II"},
 		{Magic: B("AC1006"), Desc: "AutoCAD GX-III"},
@@ -44,7 +45,7 @@ var FeatureTable = map[string][]*Feature{
 	"class": {{Magic: B("\xCA\xFE\xBA\xBE"), Desc: "Java class file"}},
 	"lzh":   {{Offset: 2, Magic: B("-lh"), Desc: "LHA Archive"}},
 	"pdf":   {{Magic: B("%PDF-"), Desc: "PDF"}},
-	"zip":   {{Magic: B("PK\003\004"), Func: TryZip}},
+	"zip":   {{Magic: B("PK\003\004"), Func: TryZip, Desc: "ZIP Archive"}},
 	"png":   {{Magic: B("\x89\x50\x4E\x47\x0D\x0A\x1A\x0A"), Desc: "Portable Network Graphics"}},
 	"jpg":   jpeg,
 	"jpeg":  jpeg,
@@ -114,6 +115,30 @@ func eachFile(fname string) error {
 }
 
 func main() {
+	if len(os.Args) <= 1 {
+		fmt.Printf("%s - what file is it ?\n\n", os.Args[0])
+		fmt.Printf("Usage: %s {filenames}\n\n", os.Args[0])
+		fmt.Println("Signature database")
+
+		suffixes := make([]string, 0, len(FeatureTable))
+		for suffix := range FeatureTable {
+			suffixes = append(suffixes, suffix)
+		}
+		sort.Strings(suffixes)
+
+		for _, suffix := range suffixes {
+			features := FeatureTable[suffix]
+			fmt.Printf("for *.%s:\n", suffix)
+			for _, f := range features {
+				fmt.Printf("  %v", f.Magic)
+				if f.Offset > 0 {
+					fmt.Printf(" from %d", f.Offset)
+				}
+				fmt.Printf(" ... %s\n", f.Desc)
+			}
+		}
+		return
+	}
 	for _, fname := range os.Args[1:] {
 		if err := eachFile(fname); err != nil {
 			fmt.Fprintf(os.Stderr, "%s: %s\n", fname, err.Error())
