@@ -38,6 +38,7 @@ var FeatureTable = map[string][]*Feature{
 	"lzh":   {{Offset: 2, Magic: B("-lh"), Desc: "LHA Archive"}},
 	"pdf":   {{Magic: B("%PDF-"), Desc: "PDF"}},
 	"zip":   {{Magic: B("PK\003\004"), Func: TryZip}},
+	"png":   {{Magic: B("\x89\x50\x4E\x47\x0D\x0A\x1A\x0A"), Desc: "Portable Network Graphics"}},
 }
 
 var FeatureTable2 = []*Feature{
