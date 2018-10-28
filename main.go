@@ -18,6 +18,13 @@ type Feature struct {
 
 type B = []byte
 
+var jpeg = []*Feature{
+	{Magic: B("\xFF\xD8\xFF\xDB"), Desc: "JPEG Image"},
+	{Magic: B("\xFF\xD8\xFF\xE0\x00\x10\x4A\x46\x49\x46\x00\x01"), Desc: "JPEG Image"},
+	{Magic: B("\xFF\xD8\xFF\xEE"), Desc: "JPEG Image"},
+	{Magic: B("\xFF\xD8\xFF\xE1"), Desc: "JPEG Image"},
+}
+
 var FeatureTable = map[string][]*Feature{
 	"exe": {{Magic: B("MZ"), Func: tryExe}},
 	"dwg": {
@@ -39,6 +46,8 @@ var FeatureTable = map[string][]*Feature{
 	"pdf":   {{Magic: B("%PDF-"), Desc: "PDF"}},
 	"zip":   {{Magic: B("PK\003\004"), Func: TryZip}},
 	"png":   {{Magic: B("\x89\x50\x4E\x47\x0D\x0A\x1A\x0A"), Desc: "Portable Network Graphics"}},
+	"jpg":   jpeg,
+	"jpeg":  jpeg,
 }
 
 var FeatureTable2 = []*Feature{
