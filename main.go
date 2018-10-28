@@ -64,12 +64,20 @@ func eachFile(fname string) error {
 	if err != nil {
 		return err
 	}
+	defer fd.Close()
+
+	if stat, err := fd.Stat(); err != nil {
+		return err
+	} else if stat.IsDir() {
+		fmt.Printf("%s: Directory\n", fname)
+		return nil
+	}
+
 	bin := make([]byte, 1024)
 	n, err := fd.Read(bin)
 	if err != nil {
 		println(err)
 	}
-	defer fd.Close()
 	bin = bin[:n]
 
 	suffix := strings.TrimPrefix(strings.ToLower(filepath.Ext(fname)), ".")
