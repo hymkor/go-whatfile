@@ -61,13 +61,36 @@ func testFeatures(fname string, bin []byte, features []*Feature) bool {
 		if f.Offset+len(f.Magic) < len(bin) && bytes.Equal(bin[f.Offset:f.Offset+len(f.Magic)], f.Magic) {
 			if f.Func != nil {
 				fmt.Printf("%s: %s\n", fname, f.Func(fname, bin))
-			}else if f.Desc != "" {
+			} else if f.Desc != "" {
 				fmt.Printf("%s: %s\n", fname, f.Desc)
 			}
 			return true
 		}
 	}
 	return false
+}
+
+func putBin(bin []byte, w io.Writer) {
+	for _, c := range bin {
+		switch c {
+		case '\r':
+			fmt.Fprint(w, "\\r")
+		case '\n':
+			fmt.Fprint(w, "\\n")
+		case '\t':
+			fmt.Fprint(w, "\\t")
+		case '\a':
+			fmt.Fprint(w, "\\a")
+		case '\b':
+			fmt.Fprint(w, "\\b")
+		default:
+			if 0x20 <= c && c <= 0x7F {
+				fmt.Fprintf(w, "%c", c)
+			} else {
+				fmt.Fprintf(w, "\\x%02X", c)
+			}
+		}
+	}
 }
 
 func eachFile(fname string) error {
@@ -129,7 +152,8 @@ func main() {
 			features := FeatureTable[suffix]
 			fmt.Printf("for *.%s:\n", suffix)
 			for _, f := range features {
-				fmt.Printf("  %v", f.Magic)
+				fmt.Print("  ")
+				putBin(f.Magic, os.Stdout)
 				if f.Offset > 0 {
 					fmt.Printf(" from %d", f.Offset)
 				}
