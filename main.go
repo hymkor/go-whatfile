@@ -61,8 +61,7 @@ func testFeatures(fname string, bin []byte, features []*Feature) bool {
 		if f.Offset+len(f.Magic) < len(bin) && bytes.Equal(bin[f.Offset:f.Offset+len(f.Magic)], f.Magic) {
 			if f.Func != nil {
 				fmt.Printf("%s: %s\n", fname, f.Func(fname, bin))
-			}
-			if f.Desc != "" {
+			}else if f.Desc != "" {
 				fmt.Printf("%s: %s\n", fname, f.Desc)
 			}
 			return true
