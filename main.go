@@ -61,6 +61,7 @@ var FeatureTable = map[string][]*Feature{
 var FeatureTable2 = []*Feature{
 	{Magic: B("#!"), Desc: "UNIX Executables"},
 	{Magic: B("\xEF\xBB\xBF#!"), Desc: "Broken UNIX Executables(BOM)"},
+	{Magic: B("\x7FELF"), Desc: "ELF - Executable and Linkable Format"},
 }
 
 func testFeatures(fname string, bin []byte, features []*Feature) bool {
