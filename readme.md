@@ -29,8 +29,8 @@ Check BOM, `\0` position for UTF16, whether is utf8 valid data or not.
     mbcs: ANSI(MBCS),CRLF text data
     text.go: ANSI(SBCS),LF text data
 
-Misc.
------
+Others
+-------
 
 Run `wfile` without parameters to show database.
 
@@ -39,39 +39,49 @@ Run `wfile` without parameters to show database.
     Usage: wfile.exe {filenames}
 
     Signature database
+    for *.arx:
+      MZ ... Portable Executable
+    for *.brx:
+      MZ ... Portable Executable
     for *.class:
-      [202 254 186 190] ... Java class file
+      \xCA\xFE\xBA\xBE ... Java class file
+    for *.dll:
+      MZ ... Portable Executable
     for *.dwg:
-      [65 67 49 48 48 51] ... AutoCAD EX-II
-      [65 67 49 48 48 54] ... AutoCAD GX-III
-      [65 67 49 48 48 57] ... AutoCAD 12,12,GX-5
-      [65 67 49 48 49 50] ... AutoCAD 13
-      [65 67 49 48 49 52] ... AutoCAD 14
-      [65 67 49 48 49 53] ... AutoCAD 2000,2000i,2002
-      [65 67 49 48 49 56] ... AutoCAD 2004,2005,2006
-      [65 67 49 48 50 49] ... AutoCAD 2007,2008,2009
-      [65 67 49 48 50 52] ... AutoCAD 2010,2011,2012
-      [65 67 49 48 50 55] ... AutoCAD 2013,2014,2015,2016,2017
-      [65 67 49 48 51 50] ... AutoCAD 2018
+      AC1003 ... AutoCAD EX-II
+      AC1006 ... AutoCAD GX-III
+      AC1009 ... AutoCAD 12,12,GX-5
+      AC1012 ... AutoCAD 13
+      AC1014 ... AutoCAD 14
+      AC1015 ... AutoCAD 2000,2000i,2002
+      AC1018 ... AutoCAD 2004,2005,2006
+      AC1021 ... AutoCAD 2007,2008,2009
+      AC1024 ... AutoCAD 2010,2011,2012
+      AC1027 ... AutoCAD 2013,2014,2015,2016,2017
+      AC1032 ... AutoCAD 2018
     for *.exe:
-      [77 90] ... Portable Executable
+      MZ ... Portable Executable
     for *.gz:
-      [31 139] ... gzip compressed
+      \x1F\x8B ... gzip compressed
     for *.jpeg:
-      [255 216 255 219] ... JPEG Image
-      [255 216 255 224 0 16 74 70 73 70 0 1] ... JPEG Image
-      [255 216 255 238] ... JPEG Image
-      [255 216 255 225] ... JPEG Image
+      \xFF\xD8\xFF\xDB ... JPEG Image
+      \xFF\xD8\xFF\xE0\x00\x10JFIF\x00\x01 ... JPEG Image
+      \xFF\xD8\xFF\xEE ... JPEG Image
+      \xFF\xD8\xFF\xE1 ... JPEG Image
     for *.jpg:
-      [255 216 255 219] ... JPEG Image
-      [255 216 255 224 0 16 74 70 73 70 0 1] ... JPEG Image
-      [255 216 255 238] ... JPEG Image
-      [255 216 255 225] ... JPEG Image
+      \xFF\xD8\xFF\xDB ... JPEG Image
+      \xFF\xD8\xFF\xE0\x00\x10JFIF\x00\x01 ... JPEG Image
+      \xFF\xD8\xFF\xEE ... JPEG Image
+      \xFF\xD8\xFF\xE1 ... JPEG Image
     for *.lzh:
-      [45 108 104] from 2 ... LHA Archive
+      -lh from 2 ... LHA Archive
     for *.pdf:
-      [37 80 68 70 45] ... PDF
+      %PDF- ... PDF
     for *.png:
-      [137 80 78 71 13 10 26 10] ... Portable Network Graphics
+      \x89PNG\r\n\x1A\n ... Portable Network Graphics
     for *.zip:
-      [80 75 3 4] ... ZIP Archive
+      PK\x03\x04 ... ZIP Archive
+    for *:
+      #! ... UNIX Executables
+      \xEF\xBB\xBF#! ... Broken UNIX Executables(BOM)
+      \x7FELF ... ELF - Executable and Linkable Format
