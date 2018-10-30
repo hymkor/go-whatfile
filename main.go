@@ -92,7 +92,7 @@ func putBin(bin []byte, w io.Writer) {
 		case '\b':
 			fmt.Fprint(w, "\\b")
 		default:
-			if 0x20 <= c && c <= 0x7F {
+			if 0x20 <= c && c < 0x7F {
 				fmt.Fprintf(w, "%c", c)
 			} else {
 				fmt.Fprintf(w, "\\x%02X", c)
@@ -167,6 +167,15 @@ func main() {
 				}
 				fmt.Printf(" ... %s\n", f.Desc)
 			}
+		}
+		fmt.Printf("for *:\n")
+		for _, f := range FeatureTable2 {
+			fmt.Print("  ")
+			putBin(f.Magic, os.Stdout)
+			if f.Offset > 0 {
+				fmt.Printf(" from %d", f.Offset)
+			}
+			fmt.Printf(" ... %s\n", f.Desc)
 		}
 		return
 	}
