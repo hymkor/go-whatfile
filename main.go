@@ -26,8 +26,15 @@ var jpeg = []*Feature{
 	{Magic: B("\xFF\xD8\xFF\xE1"), Desc: "JPEG Image"},
 }
 
+var exe = []*Feature{
+	{Magic: B("MZ"), Func: tryExe, Desc: "Portable Executable"},
+}
+
 var FeatureTable = map[string][]*Feature{
-	"exe": {{Magic: B("MZ"), Func: tryExe, Desc: "Portable Executable"}},
+	"exe": exe,
+	"dll": exe,
+	"arx": exe,
+	"brx": exe,
 	"dwg": {
 		{Magic: B("AC1003"), Desc: "AutoCAD EX-II"},
 		{Magic: B("AC1006"), Desc: "AutoCAD GX-III"},
