@@ -17,6 +17,7 @@ func message(msg string) {
 func main() {
 	if len(os.Args) <= 1 {
 		message(fmt.Sprintf("Usage:\n%s FILENAME", os.Args[0]))
+		return
 	}
 	var out strings.Builder
 	var errmsg strings.Builder
