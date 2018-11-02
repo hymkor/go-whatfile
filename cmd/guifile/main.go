@@ -28,10 +28,12 @@ func report(files []string) string {
 
 func main() {
 	var textEdit *walk.TextEdit
-	var defaultText = "Drop files here, from windows explorer..."
+	defaultText := "Drop files here, from windows explorer..."
+	empty :=  true
 
 	if len(os.Args) >= 2 {
 		defaultText = report(os.Args[1:])
+		empty = false
 	}
 
 	MainWindow{
@@ -39,13 +41,20 @@ func main() {
 		MinSize: Size{400, 300},
 		Layout:  VBox{},
 		OnDropFiles: func(files []string) {
-			textEdit.SetText(report(files))
+			if empty {
+				textEdit.SetText(report(files))
+				empty = false
+			}else{
+				textEdit.AppendText("\r\n\r\n")
+				textEdit.AppendText(report(files))
+			}
 		},
 		Children: []Widget{
 			TextEdit{
 				AssignTo: &textEdit,
 				ReadOnly: true,
 				Text:     defaultText,
+				Font: Font{ PointSize:12 },
 			},
 		},
 	}.Run()
