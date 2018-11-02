@@ -1,7 +1,10 @@
 wfile - what file is it?
 ========================
 
-`wfile` is a command like `file` of UNIX.
+- `wfile` is a command like `file` of UNIX.
+    - `cd cmd/wfile` and `go build`
+- `guifile.exe` is Windows GUI version of wfile (output to MessageBox instead of STDOUT)
+    - `cd cmd\guifile` and `make.cmd`
 
 Support these files.
 
