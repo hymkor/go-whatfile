@@ -68,8 +68,10 @@ func main() {
 		return
 	}
 	for _, fname := range os.Args[1:] {
-		if err := Report(fname, os.Stdout, os.Stderr); err != nil {
-			fmt.Fprintf(os.Stderr, "%s: %s\n", fname, err.Error())
+		if result, err := Report(fname); err != nil {
+			fmt.Fprintf(os.Stderr, "%s: %s\n", fname, err)
+		} else {
+			fmt.Printf("%s: %s\n", fname, result)
 		}
 	}
 }

@@ -3,30 +3,26 @@ package main
 import (
 	"fmt"
 	"os"
-	"strings"
+	"path/filepath"
 
 	"github.com/mattn/msgbox"
 
 	"github.com/zetamatta/wfile"
 )
 
-func message(msg string) {
-	msgbox.Show(0, msg, os.Args[0], msgbox.OK)
+func message(msg, title string) {
+	msgbox.Show(0, msg, title, msgbox.OK)
 }
 
 func main() {
 	if len(os.Args) <= 1 {
-		message(fmt.Sprintf("Usage:\n%s FILENAME", os.Args[0]))
+		me := filepath.Base(os.Args[0])
+		message(fmt.Sprintf("Usage:\n%s FILENAME", me), me)
 		return
 	}
-	var out strings.Builder
-	var errmsg strings.Builder
-
-	if err := wfile.Report(os.Args[1], &out, &errmsg); err != nil {
-		message(err.Error())
-	} else if errmsg.Len() > 0 {
-		message(errmsg.String())
+	if result, err := wfile.Report(os.Args[1]); err != nil {
+		message(err.Error(), os.Args[1])
 	} else {
-		message(out.String())
+		message(result, os.Args[1])
 	}
 }

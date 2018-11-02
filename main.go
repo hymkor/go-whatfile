@@ -63,59 +63,55 @@ var FeatureTable2 = []*Feature{
 	{Magic: B("\x7FELF"), Desc: "ELF - Executable and Linkable Format"},
 }
 
-func testFeatures(fname string, bin []byte, features []*Feature, w io.Writer) bool {
+func testFeatures(fname string, bin []byte, features []*Feature) string {
 	for _, f := range features {
 		if f.Offset+len(f.Magic) < len(bin) && bytes.Equal(bin[f.Offset:f.Offset+len(f.Magic)], f.Magic) {
 			if f.Func != nil {
-				fmt.Fprintf(w, "%s: %s\n", fname, f.Func(fname, bin))
-			} else if f.Desc != "" {
-				fmt.Fprintf(w, "%s: %s\n", fname, f.Desc)
+				return f.Func(fname, bin)
+			} else {
+				return f.Desc
 			}
-			return true
 		}
 	}
-	return false
+	return ""
 }
 
-func Report(fname string, w io.Writer, errOut io.Writer) error {
+func Report(fname string) (string, error) {
 	fd, err := os.Open(fname)
 	if err != nil {
-		return err
+		return "", err
 	}
 	defer fd.Close()
 
 	if stat, err := fd.Stat(); err != nil {
-		return err
+		return "", err
 	} else if stat.IsDir() {
-		fmt.Fprintf(w, "%s: Directory\n", fname)
-		return nil
+		return "", fmt.Errorf("%s: Directory", fname)
 	}
 
 	bin := make([]byte, 1024)
 	n, err := fd.Read(bin)
 	if err == io.EOF {
-		fmt.Fprintf(w, "%s: zero byte file\n", fname)
-		return nil
+		return "", fmt.Errorf("%s: zero byte file\n", fname)
 	}
 	if err != nil {
-		fmt.Fprintf(errOut, "%s: %s\n", err)
+		return "", err
 	}
 	bin = bin[:n]
 
 	suffix := strings.TrimPrefix(strings.ToLower(filepath.Ext(fname)), ".")
 	if features, ok := FeatureTable[suffix]; ok {
-		if testFeatures(fname, bin, features, w) {
-			return nil
+		if result := testFeatures(fname, bin, features); result != "" {
+			return result, nil
 		}
 	}
-	if testFeatures(fname, bin, FeatureTable2, w) {
-		return nil
+	if result := testFeatures(fname, bin, FeatureTable2); result != "" {
+		return result, nil
 	}
 	for _, features := range FeatureTable {
-		if testFeatures(fname, bin, features, w) {
-			return nil
+		if result := testFeatures(fname, bin, features); result != "" {
+			return result, nil
 		}
 	}
-	fmt.Fprintf(w, "%s: %s\n", fname, TryText(fname, bin))
-	return nil
+	return TryText(fname, bin), nil
 }
