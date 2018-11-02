@@ -64,13 +64,13 @@ var FeatureTable2 = []*Feature{
 	{Magic: B("\x7FELF"), Desc: "ELF - Executable and Linkable Format"},
 }
 
-func testFeatures(fname string, bin []byte, features []*Feature) bool {
+func testFeatures(fname string, bin []byte, features []*Feature, w io.Writer) bool {
 	for _, f := range features {
 		if f.Offset+len(f.Magic) < len(bin) && bytes.Equal(bin[f.Offset:f.Offset+len(f.Magic)], f.Magic) {
 			if f.Func != nil {
-				fmt.Printf("%s: %s\n", fname, f.Func(fname, bin))
+				fmt.Fprintf(w, "%s: %s\n", fname, f.Func(fname, bin))
 			} else if f.Desc != "" {
-				fmt.Printf("%s: %s\n", fname, f.Desc)
+				fmt.Fprintf(w, "%s: %s\n", fname, f.Desc)
 			}
 			return true
 		}
@@ -101,7 +101,7 @@ func putBin(bin []byte, w io.Writer) {
 	}
 }
 
-func eachFile(fname string) error {
+func eachFile(fname string, w io.Writer, errOut io.Writer) error {
 	fd, err := os.Open(fname)
 	if err != nil {
 		return err
@@ -111,36 +111,36 @@ func eachFile(fname string) error {
 	if stat, err := fd.Stat(); err != nil {
 		return err
 	} else if stat.IsDir() {
-		fmt.Printf("%s: Directory\n", fname)
+		fmt.Fprintf(w, "%s: Directory\n", fname)
 		return nil
 	}
 
 	bin := make([]byte, 1024)
 	n, err := fd.Read(bin)
 	if err == io.EOF {
-		fmt.Printf("%s: zero byte file\n", fname)
+		fmt.Fprintf(w, "%s: zero byte file\n", fname)
 		return nil
 	}
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "%s: %s\n", err)
+		fmt.Fprintf(errOut, "%s: %s\n", err)
 	}
 	bin = bin[:n]
 
 	suffix := strings.TrimPrefix(strings.ToLower(filepath.Ext(fname)), ".")
 	if features, ok := FeatureTable[suffix]; ok {
-		if testFeatures(fname, bin, features) {
+		if testFeatures(fname, bin, features, w) {
 			return nil
 		}
 	}
-	if testFeatures(fname, bin, FeatureTable2) {
+	if testFeatures(fname, bin, FeatureTable2, w) {
 		return nil
 	}
 	for _, features := range FeatureTable {
-		if testFeatures(fname, bin, features) {
+		if testFeatures(fname, bin, features, w) {
 			return nil
 		}
 	}
-	fmt.Printf("%s: %s\n", fname, TryText(fname, bin))
+	fmt.Fprintf(w, "%s: %s\n", fname, TryText(fname, bin))
 	return nil
 }
 
@@ -180,7 +180,7 @@ func main() {
 		return
 	}
 	for _, fname := range os.Args[1:] {
-		if err := eachFile(fname); err != nil {
+		if err := eachFile(fname, os.Stdout, os.Stderr); err != nil {
 			fmt.Fprintf(os.Stderr, "%s: %s\n", fname, err.Error())
 		}
 	}
