@@ -2,27 +2,41 @@ package main
 
 import (
 	"fmt"
-	"os"
-	"path/filepath"
+	"strings"
 
-	"github.com/mattn/msgbox"
+	"github.com/lxn/walk"
+	. "github.com/lxn/walk/declarative"
 
 	"github.com/zetamatta/wfile"
 )
 
-func message(msg, title string) {
-	msgbox.Show(0, msg, title, msgbox.OK)
-}
-
 func main() {
-	if len(os.Args) <= 1 {
-		me := filepath.Base(os.Args[0])
-		message(fmt.Sprintf("Usage:\n%s FILENAME", me), me)
-		return
-	}
-	if result, err := wfile.Report(os.Args[1]); err != nil {
-		message(err.Error(), os.Args[1])
-	} else {
-		message(result, os.Args[1])
-	}
+	var textEdit *walk.TextEdit
+
+	MainWindow{
+		Title:   "What file is it?",
+		MinSize: Size{400, 300},
+		Layout:  VBox{},
+		OnDropFiles: func(files []string) {
+			var buffer strings.Builder
+			for i, fname := range files {
+				if i > 0 {
+					buffer.WriteString("\r\n\r\n")
+				}
+				if result, err := wfile.Report(fname); err != nil {
+					fmt.Fprintf(&buffer, "%s:\r\n  %s", fname, err)
+				} else {
+					fmt.Fprintf(&buffer, "%s:\r\n  %s", fname, result)
+				}
+			}
+			textEdit.SetText(buffer.String())
+		},
+		Children: []Widget{
+			TextEdit{
+				AssignTo: &textEdit,
+				ReadOnly: true,
+				Text:     "Drop files here, from windows explorer...",
+			},
+		},
+	}.Run()
 }

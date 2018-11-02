@@ -1,4 +1,4 @@
 setlocal
 set GOARCH=386
-go build -ldflags="-H windowsgui"
+go build -ldflags="-s -w -H windowsgui"
 endlocal
