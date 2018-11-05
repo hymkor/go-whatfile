@@ -29,7 +29,7 @@ func report(files []string) string {
 func main() {
 	var textEdit *walk.TextEdit
 	defaultText := "Drop files here, from windows explorer..."
-	empty :=  true
+	empty := true
 
 	if len(os.Args) >= 2 {
 		defaultText = report(os.Args[1:])
@@ -44,7 +44,7 @@ func main() {
 			if empty {
 				textEdit.SetText(report(files))
 				empty = false
-			}else{
+			} else {
 				textEdit.AppendText("\r\n\r\n")
 				textEdit.AppendText(report(files))
 			}
@@ -54,7 +54,7 @@ func main() {
 				AssignTo: &textEdit,
 				ReadOnly: true,
 				Text:     defaultText,
-				Font: Font{ PointSize:12 },
+				Font:     Font{PointSize: 12},
 			},
 		},
 	}.Run()
