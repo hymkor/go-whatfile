@@ -35,7 +35,12 @@ func upper16bit(n uint32) uint {
 	return uint(n>>16) & 0xFFFF
 }
 
-func getVersionInfo(fname string) ([]uint, error) {
+type Version struct {
+	File    [4]uint
+	Product [4]uint
+}
+
+func getVersionInfo(fname string) (*Version, error) {
 	_fname, err := syscall.UTF16PtrFromString(fname)
 	if err != nil {
 		return nil, err
@@ -76,10 +81,18 @@ func getVersionInfo(fname string) ([]uint, error) {
 		uintptr(unsafe.Pointer(&f)),
 		uintptr(unsafe.Pointer(&queryLen)))
 
-	return []uint{
-		upper16bit(f.FileVersionMS),
-		lower16bit(f.FileVersionMS),
-		upper16bit(f.FileVersionLS),
-		lower16bit(f.FileVersionLS),
+	return &Version{
+		File: [4]uint{
+			upper16bit(f.FileVersionMS),
+			lower16bit(f.FileVersionMS),
+			upper16bit(f.FileVersionLS),
+			lower16bit(f.FileVersionLS),
+		},
+		Product: [4]uint{
+			upper16bit(f.ProductVersionMS),
+			lower16bit(f.ProductVersionMS),
+			upper16bit(f.ProductVersionLS),
+			lower16bit(f.ProductVersionLS),
+		},
 	}, nil
 }

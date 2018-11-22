@@ -78,8 +78,9 @@ func tryExe(fname string, bin []byte) string {
 	ver, err := getVersionInfo(fname)
 	if err == nil {
 		tags = append(tags,
-			fmt.Sprintf("%d.%d.%d.%d",
-				ver[0], ver[1], ver[2], ver[3]))
+			fmt.Sprintf("File:%d.%d.%d.%d,Product:%d.%d.%d.%d",
+				ver.File[0], ver.File[1], ver.File[2], ver.File[3],
+				ver.Product[0], ver.Product[1], ver.Product[2], ver.Product[3]))
 	} else {
 		println(err.Error())
 	}
