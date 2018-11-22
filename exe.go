@@ -1,6 +1,7 @@
 package wfile
 
 import (
+	"fmt"
 	"strings"
 
 	"github.com/H5eye/go-pefile"
@@ -73,6 +74,14 @@ func tryExe(fname string, bin []byte) string {
 	tags = append(tags, imageCharacteristics(pe)...)
 	if pe.OptionalHeader64 != nil {
 		tags = append(tags, "64bit Header")
+	}
+	ver, err := getVersionInfo(fname)
+	if err == nil {
+		tags = append(tags,
+			fmt.Sprintf("%d.%d.%d.%d",
+				ver[0], ver[1], ver[2], ver[3]))
+	} else {
+		println(err.Error())
 	}
 	return strings.Join(tags, ", ")
 }
