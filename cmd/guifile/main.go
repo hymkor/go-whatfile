@@ -8,7 +8,7 @@ import (
 	"github.com/lxn/walk"
 	. "github.com/lxn/walk/declarative"
 
-	"./../../../wfile"
+	"github.com/zetamatta/wfile"
 )
 
 func report(files []string) string {
