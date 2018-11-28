@@ -40,7 +40,7 @@ type Version struct {
 	Product [4]uint
 }
 
-func getVersionInfo(fname string) (*Version, error) {
+func GetVersionInfo(fname string) (*Version, error) {
 	_fname, err := syscall.UTF16PtrFromString(fname)
 	if err != nil {
 		return nil, err

@@ -75,7 +75,7 @@ func tryExe(fname string, bin []byte) string {
 	if pe.OptionalHeader64 != nil {
 		tags = append(tags, "64bit Header")
 	}
-	ver, err := getVersionInfo(fname)
+	ver, err := GetVersionInfo(fname)
 	if err == nil {
 		tags = append(tags,
 			fmt.Sprintf("File:%d.%d.%d.%d,Product:%d.%d.%d.%d",
