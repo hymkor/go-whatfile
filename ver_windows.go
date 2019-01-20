@@ -35,7 +35,13 @@ func upper16bit(n uint32) uint {
 	return uint(n>>16) & 0xFFFF
 }
 
-func GetVersionInfo(fname string) (*Version, error) {
+type versionInfo struct {
+	buffer []byte
+	size   uintptr
+	fname  *uint16
+}
+
+func NewVersionInfo(fname string) (*versionInfo, error) {
 	_fname, err := syscall.UTF16PtrFromString(fname)
 	if err != nil {
 		return nil, err
@@ -49,7 +55,9 @@ func GetVersionInfo(fname string) (*Version, error) {
 		}
 		return nil, errors.New("GetFileVersionInfoSize failed.")
 	}
+
 	buffer := make([]byte, size)
+
 	rc, _, err := procGetFileVersionInfo.Call(
 		uintptr(unsafe.Pointer(_fname)),
 		0,
@@ -63,31 +71,61 @@ func GetVersionInfo(fname string) (*Version, error) {
 		return nil, errors.New("GetFileVersioninfo failed.")
 	}
 
-	subBlock, err := syscall.UTF16PtrFromString(`\`)
-	if err != nil {
-		return nil, err
-	}
-	var f *vsFixedFileInfo
-	var queryLen uintptr
+	return &versionInfo{
+		buffer: buffer,
+		size:   size,
+		fname:  _fname,
+	}, nil
+}
 
+func (vi *versionInfo) Query(key string, f uintptr) (uintptr, error) {
+	subBlock, err := syscall.UTF16PtrFromString(key)
+	if err != nil {
+		return 0, err
+	}
+	var queryLen uintptr
 	procVerQueryValue.Call(
-		uintptr(unsafe.Pointer(&buffer[0])),
+		uintptr(unsafe.Pointer(&vi.buffer[0])),
 		uintptr(unsafe.Pointer(subBlock)),
-		uintptr(unsafe.Pointer(&f)),
+		f,
 		uintptr(unsafe.Pointer(&queryLen)))
 
-	return &Version{
-		File: [4]uint{
+	return queryLen, nil
+}
+
+func (vi *versionInfo) Number() (file []uint, product []uint, err error) {
+	var f *vsFixedFileInfo
+
+	_, err = vi.Query(`\`, uintptr(unsafe.Pointer(&f)))
+	if err != nil {
+		return nil, nil, err
+	}
+	return []uint{
 			upper16bit(f.FileVersionMS),
 			lower16bit(f.FileVersionMS),
 			upper16bit(f.FileVersionLS),
 			lower16bit(f.FileVersionLS),
 		},
-		Product: [4]uint{
+		[]uint{
 			upper16bit(f.ProductVersionMS),
 			lower16bit(f.ProductVersionMS),
 			upper16bit(f.ProductVersionLS),
 			lower16bit(f.ProductVersionLS),
 		},
-	}, nil
+		nil
+}
+
+func GetVersionInfo(fname string) (*Version, error) {
+	vi, err := NewVersionInfo(fname)
+	if err != nil {
+		return nil, err
+	}
+	file, product, err := vi.Number()
+	if err != nil {
+		return nil, err
+	}
+	v := &Version{}
+	copy(v.File[:], file)
+	copy(v.Product[:], product)
+	return v, nil
 }
