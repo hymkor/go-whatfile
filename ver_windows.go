@@ -4,6 +4,8 @@ import (
 	"errors"
 	"syscall"
 	"unsafe"
+
+	"golang.org/x/sys/windows"
 )
 
 var versionDll = syscall.NewLazyDLL("version")
@@ -114,6 +116,40 @@ func (vi *versionInfo) Number() (file []uint, product []uint, err error) {
 		},
 		nil
 }
+
+func (vi *versionInfo) Translation() (uint32, uint32) {
+	var pLangCode *uint32
+	vi.Query(`\VarFileInfo\Translation`, uintptr(unsafe.Pointer(&pLangCode)))
+	return *pLangCode, *(*uint32)(unsafe.Pointer(uintptr(unsafe.Pointer(pLangCode)) + unsafe.Sizeof(*pLangCode)))
+}
+
+func utf16PtrToArray(p uintptr, size uintptr) []uint16 {
+	buffer := make([]uint16, 0, size)
+	for size > 0 {
+		ch := *(*uint16)(unsafe.Pointer(p))
+		if ch == 0 {
+			break
+		}
+		buffer = append(buffer, ch)
+		p += unsafe.Sizeof(uint16(0))
+	}
+	return buffer
+}
+
+func (vi *versionInfo) Item(key string) string {
+	var pStrInfo *uint16
+	length, _ := vi.Query(key, uintptr(unsafe.Pointer(&pStrInfo)))
+	if length <= 0 {
+		return ""
+	}
+	utf16array := utf16PtrToArray(uintptr(unsafe.Pointer(pStrInfo)), length)
+	return windows.UTF16ToString(utf16array)
+}
+
+//func {
+//	lang1,lang2 := vi.Translation()
+//	key := fmt.Sprintf(`\StringFileInfo\%04X%04X\LegalTranslation`, lang1,lang2)
+//}
 
 func GetVersionInfo(fname string) (*Version, error) {
 	vi, err := NewVersionInfo(fname)
