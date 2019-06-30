@@ -81,8 +81,6 @@ func tryExe(fname string, bin []byte) string {
 			fmt.Sprintf("File:%d.%d.%d.%d,Product:%d.%d.%d.%d",
 				ver.File[0], ver.File[1], ver.File[2], ver.File[3],
 				ver.Product[0], ver.Product[1], ver.Product[2], ver.Product[3]))
-	} else {
-		println(err.Error())
 	}
 	return strings.Join(tags, ", ")
 }
