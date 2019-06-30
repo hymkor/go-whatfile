@@ -17,10 +17,15 @@ func guessCode(bin []byte) string {
 	}
 	if pos := bytes.IndexByte(bin, 0); pos >= 0 {
 		if pos%2 == 0 {
-			return "UTF16BE"
+			if _pos := bytes.IndexByte(bin[pos+1:], 0); _pos >= 0 && _pos%2 == 1 {
+				return "UTF16BE"
+			}
 		} else {
-			return "UTF16LE"
+			if _pos := bytes.IndexByte(bin[pos+1:], 0); _pos >= 0 && _pos%2 == 1 {
+				return "UTF16LE"
+			}
 		}
+		return ""
 	}
 	for bin != nil && len(bin) > 0 {
 		pos := bytes.IndexByte(bin, '\n')
@@ -44,10 +49,12 @@ func guessCode(bin []byte) string {
 
 func TryText(fname string, bin []byte) string {
 	code := guessCode(bin)
-	if bytes.Contains(bin, B("\r\n")) || bytes.Contains(bin, B("\r\000\n")) {
+	if code == "" {
+		return "Binary"
+	} else if bytes.Contains(bin, B("\r\n")) || bytes.Contains(bin, B("\r\000\n")) {
 		code = code + ",CRLF"
 	} else if bytes.Contains(bin, B("\n")) {
 		code = code + ",LF"
 	}
-	return code + " text data"
+	return code
 }
