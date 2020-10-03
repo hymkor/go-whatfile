@@ -1,20 +1,16 @@
 package wfile
 
-import (
-	"strings"
-)
+func TryZip(fname string, bin []byte) []string {
+	result := make([]string, 0, 3)
+	result = append(result, "Zip Archive")
 
-func TryZip(fname string, bin []byte) string {
-	var buffer strings.Builder
-
-	buffer.WriteString("Zip Archive")
 	if (bin[7] & 8) != 0 {
-		buffer.WriteString(",utf8-flag-on")
+		result = append(result, "utf8-flag-on")
 	} else {
-		buffer.WriteString(",utf8-flag-off")
+		result = append(result, "utf8-flag-off")
 	}
 	if (bin[6] & 1) != 0 {
-		buffer.WriteString(",with password")
+		result = append(result, "has password")
 	}
-	return buffer.String()
+	return result
 }

@@ -2,8 +2,6 @@ package wfile
 
 import (
 	"fmt"
-	"strings"
-
 	"github.com/H5eye/go-pefile"
 )
 
@@ -65,10 +63,10 @@ func imageCharacteristics(pe *pefile.PE) []string {
 	return result
 }
 
-func tryExe(fname string, bin []byte) string {
+func tryExe(fname string, bin []byte) []string {
 	pe, err := pefile.Parse(bin)
 	if err != nil {
-		return ""
+		return nil
 	}
 	tags := []string{peSubsystem(pe)}
 	tags = append(tags, imageCharacteristics(pe)...)
@@ -78,9 +76,10 @@ func tryExe(fname string, bin []byte) string {
 	ver, err := GetVersionInfo(fname)
 	if err == nil {
 		tags = append(tags,
-			fmt.Sprintf("File:%d.%d.%d.%d,Product:%d.%d.%d.%d",
-				ver.File[0], ver.File[1], ver.File[2], ver.File[3],
+			fmt.Sprintf("File: %d.%d.%d.%d",
+				ver.File[0], ver.File[1], ver.File[2], ver.File[3]),
+			fmt.Sprintf("Product: %d.%d.%d.%d",
 				ver.Product[0], ver.Product[1], ver.Product[2], ver.Product[3]))
 	}
-	return strings.Join(tags, ", ")
+	return tags
 }

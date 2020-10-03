@@ -3,7 +3,7 @@ package wfile
 type Feature struct {
 	Offset int
 	Magic  []byte
-	Func   func(fname string, bin []byte) string
+	Func   func(fname string, bin []byte) []string
 	Desc   string
 }
 

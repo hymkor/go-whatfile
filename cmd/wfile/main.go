@@ -3,33 +3,34 @@ package main
 import (
 	"fmt"
 	"os"
+	"strings"
 
-	"github.com/mattn/go-zglob"
+	_ "github.com/mattn/getwild"
 
 	. "github.com/zetamatta/wfile"
 )
 
-func main1(fname string) {
-	if result, err := Report(fname); err != nil {
-		fmt.Fprintf(os.Stderr, "%s: %s\n", fname, err)
-	} else {
-		fmt.Printf("%s: %s\n", fname, result)
+func mains(args []string) error {
+	if len(args) <= 0 {
+		Usage(os.Stdout)
+		return nil
 	}
+	for i, fname := range args {
+		result, err := Report(fname)
+		if err != nil {
+			return fmt.Errorf("%s: %w", fname, err)
+		}
+		if i > 0 {
+			fmt.Println()
+		}
+		fmt.Printf("%s\n    %s\n", fname, strings.Join(result, "\n    "))
+	}
+	return nil
 }
 
 func main() {
-	if len(os.Args) <= 1 {
-		Usage(os.Stdout)
-		return
-	}
-	for _, arg1 := range os.Args[1:] {
-		matches, err := zglob.Glob(arg1)
-		if err != nil || matches == nil || len(matches) <= 0 {
-			main1(arg1)
-		} else {
-			for _, fname := range matches {
-				main1(fname)
-			}
-		}
+	if err := mains(os.Args[1:]); err != nil {
+		fmt.Fprintln(os.Stderr, err.Error())
+		os.Exit(1)
 	}
 }

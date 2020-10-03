@@ -5,27 +5,27 @@ import (
 	"unicode/utf8"
 )
 
-func guessCode(bin []byte) string {
+func guessCode(bin []byte) []string {
 	if bytes.HasPrefix(bin, B("\xEF\xBB\xBF")) {
-		return "UTF8 with BOM"
+		return []string{"UTF8 with BOM"}
 	}
 	if bytes.HasPrefix(bin, B("\xFE\xFF")) {
-		return "UTF16BE"
+		return []string{"UTF16BE"}
 	}
 	if bytes.HasPrefix(bin, B("\xFF\xFE")) {
-		return "UTF16LE"
+		return []string{"UTF16LE"}
 	}
 	if pos := bytes.IndexByte(bin, 0); pos >= 0 {
 		if pos%2 == 0 {
 			if _pos := bytes.IndexByte(bin[pos+1:], 0); _pos >= 0 && _pos%2 == 1 {
-				return "UTF16BE"
+				return []string{"UTF16BE"}
 			}
 		} else {
 			if _pos := bytes.IndexByte(bin[pos+1:], 0); _pos >= 0 && _pos%2 == 1 {
-				return "UTF16LE"
+				return []string{"UTF16LE"}
 			}
 		}
-		return ""
+		return nil
 	}
 	for bin != nil && len(bin) > 0 {
 		pos := bytes.IndexByte(bin, '\n')
@@ -38,23 +38,23 @@ func guessCode(bin []byte) string {
 			bin = nil
 		}
 		if !utf8.Valid(line) {
-			return "ANSI(MBCS)"
+			return []string{"ANSI(MBCS)"}
 		}
 		if utf8.RuneCount(line) != len(line) {
-			return "UTF8"
+			return []string{"UTF8"}
 		}
 	}
-	return "ANSI(SBCS)"
+	return []string{"ANSI(SBCS)"}
 }
 
-func TryText(fname string, bin []byte) string {
+func TryText(fname string, bin []byte) []string {
 	code := guessCode(bin)
-	if code == "" {
-		return "Binary"
+	if code == nil {
+		return []string{"Binary"}
 	} else if bytes.Contains(bin, B("\r\n")) || bytes.Contains(bin, B("\r\000\n")) {
-		code = code + ",CRLF"
+		return append(code, "CRLF")
 	} else if bytes.Contains(bin, B("\n")) {
-		code = code + ",LF"
+		return append(code, "LF")
 	}
 	return code
 }
