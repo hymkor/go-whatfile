@@ -5,6 +5,7 @@ endlocal
 
 :""
     set GOARCH=386
+    if not exist rsrc.syso rsrc -manifest test.manifest -o rsrc.syso
     go build -ldflags="-s -w -H windowsgui"
     exit /b
 

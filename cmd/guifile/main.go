@@ -17,10 +17,10 @@ func report(files []string) string {
 		if i > 0 {
 			buffer.WriteString("\r\n\r\n")
 		}
-		if result, err := wfile.Report(fname); err != nil {
+		if result, err := wfile.Report(fname, nil); err != nil {
 			fmt.Fprintf(&buffer, "%s:\r\n  %s", fname, err)
 		} else {
-			fmt.Fprintf(&buffer, "%s:\r\n  %s", fname, result)
+			fmt.Fprintf(&buffer, "%s:\r\n  %s", fname, strings.Join(result, "\r\n  "))
 		}
 	}
 	return buffer.String()
