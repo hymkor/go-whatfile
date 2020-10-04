@@ -22,7 +22,7 @@ func guess(fname string, bin []byte, features []*Feature) []string {
 	return nil
 }
 
-func Report(fname string) ([]string, error) {
+func Report(fname string, f func(io.Reader) []string) ([]string, error) {
 	fd, err := os.Open(fname)
 	if err != nil {
 		return nil, err
@@ -43,8 +43,20 @@ func Report(fname string) ([]string, error) {
 	if err != nil {
 		return nil, err
 	}
-	bin = bin[:n]
+	output, err := report(fname, bin[:n])
+	if err != nil {
+		return nil, err
+	}
+	if f != nil {
+		appendOutput := f(io.MultiReader(bytes.NewReader(bin[:n]), fd))
+		if appendOutput != nil && len(appendOutput) > 0 {
+			output = append(output, appendOutput...)
+		}
+	}
+	return output, nil
+}
 
+func report(fname string, bin []byte) ([]string, error) {
 	suffix := strings.TrimPrefix(strings.ToLower(filepath.Ext(fname)), ".")
 	if features, ok := suffixTable[suffix]; ok {
 		if result := guess(fname, bin, features); result != nil {

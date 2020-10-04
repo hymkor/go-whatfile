@@ -1,22 +1,30 @@
 package main
 
 import (
+	"flag"
 	"fmt"
+	"io"
 	"os"
 	"strings"
 
 	_ "github.com/mattn/getwild"
 
-	. "github.com/zetamatta/wfile"
+	"github.com/zetamatta/wfile"
 )
+
+var flagMd5 = flag.Bool("md5", false, "Show md5sum")
 
 func mains(args []string) error {
 	if len(args) <= 0 {
-		Usage(os.Stdout)
+		wfile.Usage(os.Stdout)
 		return nil
 	}
+	var f func(io.Reader) []string
+	if *flagMd5 {
+		f = wfile.Md5
+	}
 	for i, fname := range args {
-		result, err := Report(fname)
+		result, err := wfile.Report(fname, f)
 		if err != nil {
 			return fmt.Errorf("%s: %w", fname, err)
 		}
@@ -29,7 +37,8 @@ func mains(args []string) error {
 }
 
 func main() {
-	if err := mains(os.Args[1:]); err != nil {
+	flag.Parse()
+	if err := mains(flag.Args()); err != nil {
 		fmt.Fprintln(os.Stderr, err.Error())
 		os.Exit(1)
 	}
