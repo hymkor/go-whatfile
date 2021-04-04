@@ -1,0 +1,17 @@
+github.com/H5eye/go-pefile v0.0.0-20150503021915-6f59b1bc430d h1:UIUjJtf/aNSYOQ908ZlLUq4DifvCVDs39AejGC6gChA=
+github.com/H5eye/go-pefile v0.0.0-20150503021915-6f59b1bc430d/go.mod h1:ntDmtGW8+11/TwiKTIZSC/YoFhKJEAEJWf4mpe0OG8E=
+github.com/lxn/walk v0.0.0-20210112085537-c389da54e794 h1:NVRJ0Uy0SOFcXSKLsS65OmI1sgCCfiDUPj+cwnH7GZw=
+github.com/lxn/walk v0.0.0-20210112085537-c389da54e794/go.mod h1:E23UucZGqpuUANJooIbHWCufXvOcT6E7Stq81gU+CSQ=
+github.com/lxn/win v0.0.0-20210218163916-a377121e959e h1:H+t6A/QJMbhCSEH5rAuRxh+CtW96g0Or0Fxa9IKr4uc=
+github.com/lxn/win v0.0.0-20210218163916-a377121e959e/go.mod h1:KxxjdtRkfNoYDCUP5ryK7XJJNTnpC8atvtmTheChOtk=
+github.com/mattn/getwild v0.0.1 h1:+Nlzxt7fonj2MtO9y/rg5hxOnM3H6tuTqeD38W25jfo=
+github.com/mattn/getwild v0.0.1/go.mod h1:AG+GKQydHp7iLJn+VV+D7y8LeYs5bQ0Xz4fmKd5o1Sg=
+github.com/zetamatta/vf1s v0.0.0-20200310095018-b24998b00b48 h1:jHnV5U61tHWoUajPB8xmmBf/lmMyjkP7cvXevrIMPD8=
+github.com/zetamatta/vf1s v0.0.0-20200310095018-b24998b00b48/go.mod h1:CJeswl42AC3DBX4duKqjrbUsZk5Ahqu1pOnYKNOrNxU=
+github.com/zetamatta/wfile v0.0.0-20201004163337-691275db41c8 h1:OnohZNLra5QMeLlInw0++r0mENDykOBhrLBugD1IZ3I=
+github.com/zetamatta/wfile v0.0.0-20201004163337-691275db41c8/go.mod h1:7y3OoTuZy2SilPTvY5yMIaXJr3wJIFghUQBBDhdhXHs=
+golang.org/x/sys v0.0.0-20201018230417-eeed37f84f13/go.mod h1:h1NjWce9XRLGQEsW7wpKNCjG9DtNlClVuFLEZdDNbEs=
+golang.org/x/sys v0.0.0-20210403161142-5e06dd20ab57 h1:F5Gozwx4I1xtr/sr/8CFbb57iKi3297KFs0QDbGN60A=
+golang.org/x/sys v0.0.0-20210403161142-5e06dd20ab57/go.mod h1:h1NjWce9XRLGQEsW7wpKNCjG9DtNlClVuFLEZdDNbEs=
+gopkg.in/Knetic/govaluate.v3 v3.0.0 h1:18mUyIt4ZlRlFZAAfVetz4/rzlJs9yhN+U02F4u1AOc=
+gopkg.in/Knetic/govaluate.v3 v3.0.0/go.mod h1:csKLBORsPbafmSCGTEh3U7Ozmsuq8ZSIlKk1bcqph0E=
