@@ -9,22 +9,22 @@ import (
 
 	_ "github.com/mattn/getwild"
 
-	"github.com/zetamatta/wfile"
+	"github.com/zetamatta/go-whatfile"
 )
 
 var flagMd5 = flag.Bool("md5", false, "Show md5sum")
 
 func mains(args []string) error {
 	if len(args) <= 0 {
-		wfile.Usage(os.Stdout)
+		whatfile.Usage(os.Stdout)
 		return nil
 	}
 	var f func(io.Reader) []string
 	if *flagMd5 {
-		f = wfile.Md5
+		f = whatfile.Md5
 	}
 	for i, fname := range args {
-		result, err := wfile.Report(fname, f)
+		result, err := whatfile.Report(fname, f)
 		if err != nil {
 			return fmt.Errorf("%s: %w", fname, err)
 		}

@@ -8,7 +8,7 @@ import (
 	"github.com/lxn/walk"
 	. "github.com/lxn/walk/declarative"
 
-	"github.com/zetamatta/wfile"
+	"github.com/zetamatta/go-whatfile"
 )
 
 func report(files []string) string {
@@ -17,7 +17,7 @@ func report(files []string) string {
 		if i > 0 {
 			buffer.WriteString("\r\n\r\n")
 		}
-		if result, err := wfile.Report(fname, nil); err != nil {
+		if result, err := whatfile.Report(fname, nil); err != nil {
 			fmt.Fprintf(&buffer, "%s:\r\n  %s", fname, err)
 		} else {
 			fmt.Fprintf(&buffer, "%s:\r\n  %s", fname, strings.Join(result, "\r\n  "))

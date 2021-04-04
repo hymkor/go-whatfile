@@ -1,4 +1,4 @@
-package wfile
+package whatfile
 
 type Feature struct {
 	Offset int

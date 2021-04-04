@@ -1,4 +1,4 @@
-package wfile
+package whatfile
 
 type Version struct {
 	File    [4]uint

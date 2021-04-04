@@ -1,4 +1,4 @@
-package wfile
+package whatfile
 
 import (
 	"github.com/zetamatta/vf1s/peinfo"

@@ -1,4 +1,4 @@
-package wfile
+package whatfile
 
 func TryZip(fname string, bin []byte) []string {
 	result := make([]string, 0, 3)
