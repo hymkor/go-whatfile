@@ -8,7 +8,6 @@ require (
 	github.com/lxn/win v0.0.0-20210218163916-a377121e959e // indirect
 	github.com/mattn/getwild v0.0.1
 	github.com/zetamatta/vf1s v0.0.0-20200310095018-b24998b00b48
-	github.com/zetamatta/wfile v0.0.0-20201004163337-691275db41c8
-	golang.org/x/sys v0.0.0-20210403161142-5e06dd20ab57 // indirect
+	golang.org/x/sys v0.30.0 // indirect
 	gopkg.in/Knetic/govaluate.v3 v3.0.0 // indirect
 )
